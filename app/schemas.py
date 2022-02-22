@@ -20,3 +20,8 @@ class UserCreate(BaseModel):
     email:EmailStr
     password:str
  
+class UserOut(BaseModel):
+    email:EmailStr
+    created_at:datetime
+    class Config:
+        orm_mode=True
