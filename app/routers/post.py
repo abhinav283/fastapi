@@ -10,14 +10,14 @@ router = APIRouter(
 )
 
 @router.get("/")
-def get_posts(db:Session=Depends(get_db),user_id:int = Depends(oauth2.get_current_user)):
+def get_posts(db:Session=Depends(get_db),current_user:int = Depends(oauth2.get_current_user)):
     # cursor.execute("""select * from posts""" )
     # posts=cursor.fetchall()
     posts = db.query(models.Post).all()
     return {"data": posts}
 
 @router.post("/",status_code=status.HTTP_201_CREATED)
-def create_posts(post:schemas.PostCreate,db:Session=Depends(get_db), user_id:int = Depends(oauth2.get_current_user)):
+def create_posts(post:schemas.PostCreate,db:Session=Depends(get_db), current_user:int = Depends(oauth2.get_current_user)):
     # cursor.execute("""INSERT INTO posts(title,content,published) values(%s,%s,%s) RETURNING *  """, (post.title,post.content,post.published))  
     # new_post =cursor.fetchone()  
     # conn.commit()
@@ -29,7 +29,7 @@ def create_posts(post:schemas.PostCreate,db:Session=Depends(get_db), user_id:int
     return {"data" : new_post}
  
 @router.get("/{id}") #path parameter
-def get_post(id:int,db:Session=Depends(get_db),user_id:int = Depends(oauth2.get_current_user)):
+def get_post(id:int,db:Session=Depends(get_db),current_user:int = Depends(oauth2.get_current_user)):
     # cursor.execute("""select * from posts where id=%s """, (str(id)))
     # post= cursor.fetchone() 
     post = db.query(models.Post).filter(models.Post.id==id).first()
@@ -38,7 +38,7 @@ def get_post(id:int,db:Session=Depends(get_db),user_id:int = Depends(oauth2.get_
     return{"post_Details":post}
 
 @router.delete("/{id}",status_code=status.HTTP_204_NO_CONTENT ) 
-def delete_post(id:int,db:Session=Depends(get_db),user_id:int = Depends(oauth2.get_current_user)):
+def delete_post(id:int,db:Session=Depends(get_db),current_user:int = Depends(oauth2.get_current_user)):
     # cursor.execute(""" delete from posts where id=%s returning *""" ,(str(id),))
     # deleted_post = cursor.fetchone()
     # conn.commit()
