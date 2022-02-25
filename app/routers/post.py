@@ -21,7 +21,6 @@ def create_posts(post:schemas.PostCreate,db:Session=Depends(get_db), current_use
     # cursor.execute("""INSERT INTO posts(title,content,published) values(%s,%s,%s) RETURNING *  """, (post.title,post.content,post.published))  
     # new_post =cursor.fetchone()  
     # conn.commit()
-    print(user_id)
     new_post=models.Post(**post.dict())
     db.add(new_post)
     db.commit()
