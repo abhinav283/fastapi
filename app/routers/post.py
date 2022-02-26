@@ -30,11 +30,11 @@ def create_posts(post:schemas.PostCreate,db:Session=Depends(get_db), current_use
     db.refresh(new_post)
     return new_post
  
-@router.get("/{id}",response_model=schemas.Post) #path parameter
+@router.get("/{id}",response_model=schemas.PostOut) #path parameter
 def get_post(id:int,db:Session=Depends(get_db),current_user:int = Depends(oauth2.get_current_user)):
     # cursor.execute("""select * from posts where id=%s """, (str(id)))
     # post= cursor.fetchone()
-    post = db.query(models.Post).filter(models.Post.id==id).first()    
+    post = db.query(models.Post,func.count(models.Vote.post_id).label("votes")).join(models.Vote,models.Vote.post_id == models.Post.id,isouter=True).group_by(models.Post.id).filter(models.Post.id==id).first()    
     if not post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"post with id : {id} not found")
     # if post.owner_id != current_user.id:
